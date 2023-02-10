@@ -9,6 +9,6 @@ The SDK will contain:
  * Clang/LLVM compiler
  * Standard library - I am considering different options:
    * patched newlib with three options for "system calls": "do nothing" stubs, minimal stubs (e.g. only stdout/stderr redirected to user functions), no stubs (user is responsible for implementing it).
-   * patched musl where `__syscall` is a macro that calls specific function (or function-like macro) e.g. `__syscall(SYS_lstat, path, &kst) -> syscall_SYS_lstat(path, &kst)`
+   * patched musl where `__syscall` is a macro that calls specific function (or function-like macro) e.g. `__syscall(SYS_lstat, path, &kst) -> _CALL_SYS_lstat(path, &kst)`
    * or both to allow user to choose bigger or smaller, but with less functionality.
  * some samples
