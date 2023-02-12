@@ -584,6 +584,10 @@ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #define __OBSOLETE_MATH_DEFAULT 0
 #endif
 
+#ifdef __wasm__
+#define __IEEE_LITTLE_ENDIAN
+#endif
+
 #ifndef __OBSOLETE_MATH_DEFAULT
 #define __OBSOLETE_MATH_DEFAULT 1
 #endif

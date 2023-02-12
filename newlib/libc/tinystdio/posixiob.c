@@ -52,9 +52,15 @@ __strong_reference(__posix_stdout, __posix_stderr);
 FILE *const __posix_stderr = &__stdout.xfile.cfile.file;
 #endif
 
+#ifndef WASM_BAREMETAL_PATCH
+__data_weak_reference(__posix_stdin,stdin);
+__data_weak_reference(__posix_stdout,stdout);
+__data_weak_reference(__posix_stderr,stderr);
+#else
 __weak_reference(__posix_stdin,stdin);
 __weak_reference(__posix_stdout,stdout);
 __weak_reference(__posix_stderr,stderr);
+#endif
 
 __attribute__((constructor))
 static void posix_init(void)

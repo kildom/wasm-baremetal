@@ -44,6 +44,10 @@ __picolibc_non_atomic_exchange_ungetc(__ungetc_t *p, __ungetc_t v)
 	return __non_atomic_exchange_ungetc(p, v);
 }
 
+#ifndef WASM_BAREMETAL_PATCH
+__func_weak_reference(__picolibc_non_atomic_exchange_ungetc, __atomic_exchange_ungetc);
+#else
 __weak_reference(__picolibc_non_atomic_exchange_ungetc, __atomic_exchange_ungetc);
+#endif
 
 #endif

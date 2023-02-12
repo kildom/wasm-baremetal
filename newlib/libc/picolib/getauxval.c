@@ -43,4 +43,9 @@ unsigned long getauxval(unsigned long type)
 	errno = EINVAL;
 	return 0;
 }
+
+#ifndef WASM_BAREMETAL_PATCH
+__func_weak_reference(getauxval, __getauxval);
+#else
 __weak_reference(getauxval, __getauxval);
+#endif

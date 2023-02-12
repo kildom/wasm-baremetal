@@ -255,7 +255,11 @@ conv_flt (FLT_STREAM *stream, int *lenp, width_t width, void *addr, uint16_t fla
 #ifdef _WANT_IO_C99_FORMATS
         int base = 10;
 #else
+#ifndef WASM_BAREMETAL_PATCH
+        const int base = 10;
+#else
 #define base 10
+#endif
 #endif
 
 #define uintdigitsmax                                                   \

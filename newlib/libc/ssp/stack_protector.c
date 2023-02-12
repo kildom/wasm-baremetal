@@ -55,7 +55,12 @@ __stack_chk_fail_weak (void)
   raise (SIGABRT);
   _exit (127);
 }
+
+#ifndef WASM_BAREMETAL_PATCH
+__func_weak_reference(__stack_chk_fail_weak, __stack_chk_fail);
+#else
 __weak_reference(__stack_chk_fail_weak, __stack_chk_fail);
+#endif
 
 #ifdef __ELF__
 void
