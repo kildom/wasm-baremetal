@@ -505,6 +505,10 @@
 #define __OBSOLETE_MATH_DEFAULT 0
 #endif
 
+#ifdef __wasm__
+#define __IEEE_LITTLE_ENDIAN
+#endif
+
 #ifndef __OBSOLETE_MATH_DEFAULT
 /* Use old math code by default.  */
 #define __OBSOLETE_MATH_DEFAULT 1

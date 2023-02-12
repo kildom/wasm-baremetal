@@ -7300,11 +7300,11 @@ rm -f conftest*
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $newlib_cv_ldbl_eq_dbl" >&5
 $as_echo "$newlib_cv_ldbl_eq_dbl" >&6; }
-if test $newlib_cv_ldbl_eq_dbl = yes; then
+#if test $newlib_cv_ldbl_eq_dbl = yes; then # TODO: check if it is true? long double == double?
 
 $as_echo "#define _LDBL_EQ_DBL 1" >>confdefs.h
 
-fi
+#fi
 
 ac_config_files="$ac_config_files Makefile"
 

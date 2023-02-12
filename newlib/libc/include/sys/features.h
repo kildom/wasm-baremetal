@@ -532,6 +532,11 @@ extern "C" {
 
 #endif /* __CYGWIN__ */
 
+#if __wasm__
+#define _POSIX_MONOTONIC_CLOCK			200809L
+#define _POSIX_TIMERS				200809L
+#endif
+
 #ifdef __cplusplus
 }
 #endif

@@ -1733,6 +1733,8 @@ case $os in
 		;;
 	none)
 		;;
+	unknown)
+		;;
 	*)
 		echo Invalid configuration \`"$1"\': OS \`"$os"\' not recognized 1>&2
 		exit 1

@@ -377,6 +377,10 @@ case "${host_cpu}" in
 	newlib_cflags="${newlib_cflags} -DMISSING_SYSCALL_NAMES"
 	newlib_cflags="${newlib_cflags} -ffunction-sections -fdata-sections "
 	;;
+  wasm32)
+	;;
+  wasm64)
+	;;
   *)
 	echo '***' "Newlib does not support CPU ${host_cpu}" 1>&2
 	exit 1

@@ -574,6 +574,20 @@
 #endif	/* __ELF__ */
 #endif	/* __GNUC__ */
 
+#ifndef WASM_BAREMETAL_PATCH
+#ifdef __weak_reference
+#undef __weak_reference
+#define	__weak_reference(...) int you_cannot_use_weak_reference__use_attribute_or_func_weak_reference_or_data_weak_reference[-1]
+#define	__data_weak_reference(sym,alias)	\
+	__asm__(".weak " #alias);	\
+	__asm__(".equ "  #alias ", " #sym)
+#define	__func_weak_reference(sym,alias)	\
+	__asm__(".weak " #alias);	\
+	__asm__(".type " #alias ",@function"); \
+	__asm__(".equ "  #alias ", " #sym)
+#endif
+#endif // WASM_BAREMETAL_PATCH
+
 #ifndef	__FBSDID
 #define	__FBSDID(s)	struct __hack
 #endif
