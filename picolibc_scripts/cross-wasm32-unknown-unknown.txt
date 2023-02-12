@@ -1,0 +1,17 @@
+[binaries]
+c = 'clang'
+ar = 'ar'
+as = 'llvm-as'
+ld = 'wasm-ld'
+strip = 'strip'
+
+[host_machine]
+system = 'none'
+cpu_family = 'wasm32'
+cpu = 'wasm32'
+endian = 'little'
+
+[properties]
+c_args = [ '-nostdlib', '-fno-common' ]
+needs_exe_wrapper = true
+skip_sanity_check = true

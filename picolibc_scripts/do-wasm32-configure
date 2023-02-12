@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e -o pipefail
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+ROOT_DIR=$(realpath $DIR/..)
+PICOLIBC_DIR=$ROOT_DIR/picolibc
+
+ARCH=wasm32-unknown-unknown
+
+PREFIX=-Dprefix=$ROOT_DIR/install/picolibc
+
+meson setup \
+    -Dincludedir=picolibc/$ARCH/include \
+    -Dlibdir=picolibc/$ARCH/lib \
+    -Dpicocrt=false \
+    -Dfast-strcmp=false \
+    -Dmultilib=false \
+    -Dsemihost=false \
+    -Dspecsdir=none \
+    -Dio-c99-formats=false \
+    -Datomic-ungetc=false \
+    -Dio-float-exact=false \
+    -Dformat-default=integer \
+    -Dthread-local-storage=false \
+    --cross-file $DIR/cross-$ARCH.txt \
+    "$PREFIX" \
+    "$@" \
+    $PICOLIBC_DIR

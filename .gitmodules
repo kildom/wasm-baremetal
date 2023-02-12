@@ -1,0 +1,9 @@
+[submodule "llvm-project"]
+	path = llvm-project
+	url = https://github.com/llvm/llvm-project.git
+[submodule "newlib-cygwin"]
+	path = newlib-cygwin
+	url = https://github.com/kildom/wasm-baremetal.git
+[submodule "picolibc"]
+	path = picolibc
+	url = https://github.com/kildom/wasm-baremetal.git
