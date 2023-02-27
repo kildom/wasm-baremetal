@@ -1,5 +1,6 @@
 
 
+import json
 import os
 from pathlib import Path
 import pickle
@@ -8,6 +9,7 @@ import subprocess
 import sys
 from tempfile import NamedTemporaryFile
 import concurrent.futures
+from types import SimpleNamespace
 
 NINJA = 'ninja'
 BUILD_DIR = '/home/doki/my/wasm-baremetal/build/llvm'
@@ -139,34 +141,107 @@ class Test:
             self.all_deps = self.get_all_deps()
             with open(state_file, 'wb') as fd:
                 pickle.dump(self.all_deps, fd)
+        targets = [
+            'install-clang',
+            'install-clang-format',
+            'install-clang-tidy',
+            'install-clang-apply-replacements',
+            'install-lld',
+            'install-llvm-mc',
+            'install-llvm-ranlib',
+            'install-llvm-strip',
+            'install-llvm-dwarfdump',
+            'install-clang-resource-headers',
+            'install-ar',
+            'install-ranlib',
+            'install-strip',
+            'install-nm',
+            'install-size',
+            'install-strings',
+            'install-objdump',
+            'install-objcopy',
+            'install-c++filt',
+        ]
+        #self.divide_by_levels(targets)
+        self.simplify_graph(targets)
+
+
+    def get_obj_deps(self, name, result=None, visited=None):
+        if result is None:
+            result = set()
+        if visited is None:
+            visited = set()
+        if name in visited:
+            return result
+        visited.add(name)
+        target = self.all_deps[name]
+        for sub in set().union(*target[0:3]):
+            if sub not in self.all_deps:
+                pass
+            elif sub.endswith('.o'):
+                result.add(sub)
+            else:
+                self.get_obj_deps(sub, result, visited)
+        return result
+
+
+    def simplify_graph(self, roots):
+        root_objects = set()
+        level_objects = set(roots)
+        while len(level_objects):
+            next = set()
+            for obj in level_objects:
+                next.update(self.get_obj_deps(obj))
+            level_objects = next
+            root_objects.update(next)
+        print(f'Used objects: {len(root_objects)}')
+        obj_outputs = dict([name, set()] for name in root_objects)
+        for name in self.all_deps:
+            if name.endswith('.o'):
+                deps = self.get_obj_deps(name)
+                for dep in deps:
+                    if dep in obj_outputs:
+                        obj_outputs[dep].add(name)
+        group_by_deps = {'||': 0}
+        group_by_target = {}
+        groups = [set()]
+        for (name, outputs) in obj_outputs.items():
+            deps = list(self.get_obj_deps(name))
+            deps.sort()
+            outputs = list(outputs.intersection(root_objects))
+            outputs.sort()
+            key = '|'.join(deps) + '||' + '|'.join(outputs)
+            if key not in group_by_deps:
+                group_index = len(groups)
+                groups.append(set())
+                group_by_deps[key] = group_index
+            else:
+                group_index = group_by_deps[key]
+            group_by_target[name] = group_index
+            groups[group_index].add(name)
+        for (deps_str, group_index) in group_by_deps.items():
+            (deps, _) = deps_str.split('||')
+            deps = deps.split('|')
+            if deps[0] == '':
+                print(f'"[{group_index}] {len(groups[group_index])}"')
+                continue
+            dep_groups = set()
+            for dep in deps:
+                dep_groups.add(group_by_target[dep])
+            for dep_index in dep_groups:
+                print(f'"[{dep_index}] {len(groups[dep_index])}" -> "[{group_index}] {len(groups[group_index])}"')
+
+
+
+    def divide_by_levels(self, targets):
         print('Processing...')
-        self.process_dep('install-clang')
-        self.process_dep('install-clang')
-        self.process_dep('install-clang-format')
-        self.process_dep('install-clang-tidy')
-        self.process_dep('install-clang-apply-replacements')
-        self.process_dep('install-lld')
-        self.process_dep('install-llvm-mc')
-        self.process_dep('install-llvm-ranlib')
-        self.process_dep('install-llvm-strip')
-        self.process_dep('install-llvm-dwarfdump')
-        self.process_dep('install-clang-resource-headers')
-        self.process_dep('install-ar')
-        self.process_dep('install-ranlib')
-        self.process_dep('install-strip')
-        self.process_dep('install-nm')
-        self.process_dep('install-size')
-        self.process_dep('install-strings')
-        self.process_dep('install-objdump')
-        self.process_dep('install-objcopy')
-        self.process_dep('install-c++filt')
+        for t in targets:
+            self.process_dep(t)
         print('--', len(self.levels))
         for l in self.levels:
             print(len(l))
         print('--', sum(len(l) for l in self.levels))
         print(len([x for x in self.all_deps if x.endswith('.o')]))
-
-
 
 x = Test()
 x.main()
