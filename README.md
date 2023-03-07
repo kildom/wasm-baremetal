@@ -37,5 +37,6 @@ You can pass environment variables to customize the build:
   * `fast` - fast building, unoptimized with no assertions or debug info,
   * `debug` - unoptimized build with assertions and debug info,
   * `lto` - build optimized for size with LTO (a lot of system memory required),
+* `BM_LLVM_BUILD_ESSENTIALS` - skips non-essential Clang/LLVM executables
 
 Where `{project}` can be: `LLVM`, `COMPILER_RT`, `CRT`, `LIBC`, `LIBCXX`, `LIBUNWIND`.

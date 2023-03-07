@@ -17,6 +17,17 @@ elif [ "$BM_LLVM_BUILD_TYPE" = "debug" ]; then
     BUILD_TYPE_OPTIONS=(-DCMAKE_BUILD_TYPE=Debug)
 fi
 
+if [ -z "$BM_LLVM_BUILD_ESSENTIALS" ]; then
+    ADDITIONAL_TARGETS="
+    install-clang-format
+    install-clang-tidy
+    install-clang-apply-replacements
+    install-llc
+    install-llvm-dwarfdump
+    "
+    # TODO: Check if we can move more to this list.
+fi
+
 [ -e build.ninja ] || \
     cmake -G Ninja \
     -DCMAKE_INSTALL_PREFIX=/$(realpath --relative-to=$INSTALL_ROOT $INSTALL_DIR) \
@@ -42,14 +53,10 @@ $BM_CONFIGURE_ONLY && exit
 DESTDIR=$INSTALL_ROOT \
     ninja $NINJA_FLAGS $NINJA_LLVM_FLAGS \
     install-clang \
-    install-clang-format \
-    install-clang-tidy \
-    install-clang-apply-replacements \
     install-lld \
     install-llvm-mc \
     install-llvm-ranlib \
     install-llvm-strip \
-    install-llvm-dwarfdump \
     install-clang-resource-headers \
     install-ar \
     install-llvm-as \
@@ -61,5 +68,5 @@ DESTDIR=$INSTALL_ROOT \
     install-objdump \
     install-objcopy \
     install-c++filt \
-    install-llc \
-    llvm-config
+    llvm-config \
+    $ADDITIONAL_TARGETS
