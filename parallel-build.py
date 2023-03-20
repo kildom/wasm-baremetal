@@ -245,3 +245,16 @@ class Test:
 
 x = Test()
 x.main()
+
+# Build procedure for each node:
+# 1. Get job file description which contains:
+#    * repository URL
+#    * commit SHA
+#    * patch if needed
+#    * configured build directory
+#    * controller server address or tasks list
+# 2. Clone repository (may be shallow, may use local cache)
+# 3. Apply patch
+# 4. Extract build directory
+# 5. Download and extract dependencies if exists
+# 6. 
